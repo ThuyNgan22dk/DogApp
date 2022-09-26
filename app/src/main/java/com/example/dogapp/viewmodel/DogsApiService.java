@@ -13,7 +13,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DogsApiService {
     private static final String BASE_URL = "https://raw.githubusercontent.com";
     private DogApi api;
-
     public DogsApiService(){
         api = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -22,7 +21,6 @@ public class DogsApiService {
                 .build()
                 .create(DogApi.class);
     }
-
     public Single<List<DogBreed>> getDogs(){
         return api.getDogs();
     }
