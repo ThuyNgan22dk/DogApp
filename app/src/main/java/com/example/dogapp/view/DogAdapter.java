@@ -5,6 +5,8 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -14,25 +16,18 @@ import com.example.dogapp.R;
 import com.example.dogapp.model.DogBreed;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
-public class DogAdapter extends RecyclerView.Adapter<DogAdapter.RecyclerViewHolder> {
+public class DogAdapter extends RecyclerView.Adapter<DogAdapter.RecyclerViewHolder> implements Filterable {
 
-    private ArrayList<DogBreed> dogBreedArrayList;
+    private ArrayList<DogBreed> dogLists;
+    private ArrayList<DogBreed> dogListOlds;
     private Context mcontext;
 
     public DogAdapter(ArrayList<DogBreed> dogArrayList, Context mcontext) {
-        this.dogBreedArrayList = dogArrayList;
+        this.dogLists = dogArrayList;
         this.mcontext = mcontext;
-    }
-
-    // method for filtering our recyclerview items.
-    public void filterList(ArrayList<DogBreed> filterlist) {
-        // below line is to add our filtered
-        // list in our course array list.
-        dogBreedArrayList = filterlist;
-        // below line is to notify our adapter
-        // as change in recycler view data.
-        notifyDataSetChanged();
     }
 
     @NonNull
@@ -46,7 +41,7 @@ public class DogAdapter extends RecyclerView.Adapter<DogAdapter.RecyclerViewHold
     @Override
     public void onBindViewHolder(@NonNull RecyclerViewHolder holder, int position) {
         // Set the data to textview and imageview.
-        DogBreed dogList = dogBreedArrayList.get(position);
+        DogBreed dogList = dogLists.get(position);
         holder.dogName.setText(dogList.getName());
         holder.dogImg.setImageURI(Uri.parse(dogList.getUrl()));
     }
@@ -54,7 +49,37 @@ public class DogAdapter extends RecyclerView.Adapter<DogAdapter.RecyclerViewHold
     @Override
     public int getItemCount() {
         // this method returns the size of recyclerview
-        return dogBreedArrayList.size();
+        return dogLists.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String strSearch = charSequence.toString();
+                if (strSearch.isEmpty()){
+                    dogLists = dogListOlds;
+                } else {
+                    ArrayList<DogBreed> dogBreedList = new ArrayList<>();
+                    for (DogBreed dog : dogListOlds) {
+                        if (dog.getName().toLowerCase().contains(strSearch.toLowerCase())) {
+                            dogBreedList.add(dog);
+                        }
+                    }
+                    dogLists = dogBreedList;
+                }
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = dogLists;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                dogLists = (ArrayList<DogBreed>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
     // View Holder Class to handle Recycler View.
@@ -65,8 +90,9 @@ public class DogAdapter extends RecyclerView.Adapter<DogAdapter.RecyclerViewHold
 
         public RecyclerViewHolder(@NonNull View itemView) {
             super(itemView);
-            dogName = itemView.findViewById(R.id.id_dog_name);
-            dogImg = itemView.findViewById(R.id.id_dog_img);
+            dogName = (TextView) itemView.findViewById(R.id.id_dog_name);
+            dogImg = (ImageView) itemView.findViewById(R.id.id_dog_img);
         }
     }
+
 }

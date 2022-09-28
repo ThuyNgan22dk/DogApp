@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +32,7 @@ import io.reactivex.rxjava3.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
     private Context context;
+    private SearchView searchView;
     private DogsApiService apiService;
     private ArrayList<DogBreed> dogList;
     private DogAdapter adapter;
@@ -69,8 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
         // added data from arraylist to adapter class.
-        DogAdapter adapter=new DogAdapter(dogList,this);
-
+        adapter = new DogAdapter(dogList,this);
         // setting grid layout manager to implement grid view.
         // in this method '2' represents number of columns to be displayed in grid view.
         GridLayoutManager layoutManager=new GridLayoutManager(this,2);
@@ -81,56 +82,59 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // below line is to get our inflater
-        MenuInflater inflater = getMenuInflater();
+        getMenuInflater().inflate(R.menu.top_bar_app, menu);
 
-        // inside inflater we are inflating our menu file.
-        inflater.inflate(R.menu.top_bar_app, menu);
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        searchView = (SearchView) menu.findItem(R.id.actionSearch).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+        searchView.setMaxWidth(Integer.MAX_VALUE);
 
-        // below line is to get our menu item.
-        MenuItem searchItem = menu.findItem(R.id.actionSearch);
-
-        // getting search view of our item.
-        SearchView searchView = (SearchView) searchItem.getActionView();
-
-        // below line is to call set on query text listener method.
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
+            public boolean onQueryTextSubmit(String s) {
+                if(adapter != null){
+                    adapter.getFilter().filter(s);
+                    return true;
+                }
+//                adapter.getFilter().filter(s);
                 return false;
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                filter(newText);
+            public boolean onQueryTextChange(String s) {
+                if(adapter != null){
+                    adapter.getFilter();
+                    return true;
+                }
+//                adapter.getFilter().filter(s);
                 return false;
             }
         });
         return true;
     }
 
-    private void filter(String text) {
-        // creating a new array list to filter our data.
-        ArrayList<DogBreed> filteredlist = new ArrayList<DogBreed>();
-
-        // running a for loop to compare elements.
-        for (DogBreed dog : dogList) {
-            // checking if the entered string matched with any item of our recycler view.
-            if (dog.getName().toLowerCase().contains(text.toLowerCase())) {
-                // if the item is matched we are
-                // adding it to our filtered list.
-                filteredlist.add(dog);
-            }
-        }
-        if (filteredlist.isEmpty()) {
-            // if no item is added in filtered list we are
-            // displaying a toast message as no data found.
-            Toast.makeText(this, "No Data Found..", Toast.LENGTH_SHORT).show();
-        } else {
-            // at last we are passing that filtered
-            // list to our adapter class.
-            adapter.filterList(filteredlist);
-        }
-    }
+//    private void filter(String text) {
+//        // creating a new array list to filter our data.
+//        ArrayList<DogBreed> filteredlist = new ArrayList<DogBreed>();
+//
+//        // running a for loop to compare elements.
+//        for (DogBreed dog : dogList) {
+//            // checking if the entered string matched with any item of our recycler view.
+//            if (dog.getName().toLowerCase().contains(text.toLowerCase())) {
+//                // if the item is matched we are
+//                // adding it to our filtered list.
+//                filteredlist.add(dog);
+//            }
+//        }
+//        if (filteredlist.isEmpty()) {
+//            // if no item is added in filtered list we are
+//            // displaying a toast message as no data found.
+//            Toast.makeText(this, "No Data Found..", Toast.LENGTH_SHORT).show();
+//        } else {
+//            // at last we are passing that filtered
+//            // list to our adapter class.
+//            adapter.filterList(filteredlist);
+//        }
+//    }
 
 }
