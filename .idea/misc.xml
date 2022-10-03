@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/thuyn/AndroidStudioProjects/DogApp/app/src/main/res/drawable/card_item.xml" value="0.2045" />
+        <entry key="..\:/Users/thuyn/AndroidStudioProjects/DogApp/app/src/main/res/drawable/search_view_bg.xml" value="0.1055" />
+        <entry key="..\:/Users/thuyn/AndroidStudioProjects/DogApp/app/src/main/res/layout/activity_dog_item.xml" value="0.10733695652173914" />
         <entry key="..\:/Users/thuyn/AndroidStudioProjects/DogApp/app/src/main/res/layout/activity_main.xml" value="0.25" />
         <entry key="..\:/Users/thuyn/AndroidStudioProjects/DogApp/app/src/main/res/layout/card_item.xml" value="0.23867753623188406" />
         <entry key="..\:/Users/thuyn/AndroidStudioProjects/DogApp/app/src/main/res/menu/top_bar_app.xml" value="0.18802083333333333" />
