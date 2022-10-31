@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.example.dogapp.model.DogBreed;
 
 public class DogItemActivity extends AppCompatActivity {
@@ -20,14 +19,14 @@ public class DogItemActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dog_item);
 
-        textView = findViewById(R.id.id_name);
-        imageView = findViewById(R.id.id_img);
+        textView = findViewById(R.id.tv_name);
+        imageView = findViewById(R.id.iv_avatar);
 
         Intent intent = getIntent();
         if (intent.getExtras() != null){
             dogBreed = (DogBreed) intent.getSerializableExtra("data");
             textView.setText(dogBreed.getName());
-            Glide.with(this).load(dogBreed.getUrl()).into(imageView);
+//            Glide.with(this).load(dogBreed.getUrl()).into(imageView);
         }
 
     }

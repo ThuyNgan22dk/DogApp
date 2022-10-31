@@ -7,22 +7,30 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <SearchView
-        android:id="@+id/search_view"
+<!--    <SearchView-->
+<!--        android:id="@+id/search_view"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="8dp"-->
+<!--        app:queryHint="Search Here ..."-->
+<!--        app:iconifiedByDefault="false"-->
+<!--        android:background="@drawable/search_view_bg"/>-->
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:queryHint="Search Here ..."
-        app:iconifiedByDefault="false"
-        android:background="@drawable/search_view_bg"/>
-    <GridView
-        android:id="@+id/id_gv_dog"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:horizontalSpacing="4dp"
-        android:verticalSpacing="4dp"
-        android:layout_margin="4dp"
-        android:numColumns="2">
-    </GridView>
+        android:layout_height="match_parent"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/dogs_nav" />
+    <!--    <GridView-->
+<!--        android:id="@+id/id_gv_dog"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:horizontalSpacing="4dp"-->
+<!--        android:verticalSpacing="4dp"-->
+<!--        android:layout_margin="4dp"-->
+<!--        android:numColumns="2">-->
+<!--    </GridView>-->
 
 </LinearLayout>
