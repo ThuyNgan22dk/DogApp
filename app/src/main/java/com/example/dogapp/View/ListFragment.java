@@ -94,6 +94,7 @@ public class ListFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                dogsAdapter.getFilter().filter(newText);
                 return false;
             }
         });

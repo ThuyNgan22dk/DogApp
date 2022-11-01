@@ -2,7 +2,10 @@ package com.example.dogapp.viewmodel;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Filter;
@@ -23,6 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class DogAdapter extends RecyclerView.Adapter<DogAdapter.ViewHolder> implements Filterable {
     private ArrayList<DogBreed> dogBreedList;
@@ -34,22 +38,22 @@ public class DogAdapter extends RecyclerView.Adapter<DogAdapter.ViewHolder> impl
     }
 
     public Filter getFilter() {
-        Filter filter = new Filter() {
+        return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence charSequence) {
-                FilterResults filterResults = new FilterResults();
                 String searchStr = charSequence.toString().toLowerCase();
                 List<DogBreed> resultData = new ArrayList<DogBreed>();
                 if (searchStr.isEmpty()) {
                     resultData.addAll(dogBreedsCopy);
                 } else {
-                    for (DogBreed dogBreed: dogBreedsCopy) {
-                        if (dogBreed.getName().contains(searchStr)){
-                            resultData.add(dogBreed);
+                    for (DogBreed dog: dogBreedsCopy) {
+                        if (dog.getName().toLowerCase().contains(searchStr)){
+                            resultData.add(dog);
                         }
                     }
                 }
-//                filterResults.count = resultData.size();
+                FilterResults filterResults = new FilterResults();
+                filterResults.count = resultData.size();
                 filterResults.values = resultData;
                 return filterResults;
             }
@@ -61,7 +65,6 @@ public class DogAdapter extends RecyclerView.Adapter<DogAdapter.ViewHolder> impl
                 notifyDataSetChanged();
             }
         };
-        return filter;
     }
 
     @NonNull
@@ -93,7 +96,7 @@ public class DogAdapter extends RecyclerView.Adapter<DogAdapter.ViewHolder> impl
             super(itemBinding.getRoot());
             this.binding = itemBinding;
 
-            binding.ivAvatar.setOnClickListener(new View.OnClickListener() {
+            itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     DogBreed dog = dogBreedList.get(getAdapterPosition());
@@ -102,6 +105,90 @@ public class DogAdapter extends RecyclerView.Adapter<DogAdapter.ViewHolder> impl
                     Navigation.findNavController(view).navigate(R.id.detailsFragment,bundle);
                 }
             });
+            itemView.setOnTouchListener(new onSwipeTouchListener(){
+                @Override
+                public void onSwipeLeft(){
+                    if (binding.layout1.getVisibility() == View.GONE){
+                        binding.layout1.setVisibility(View.VISIBLE);
+                        binding.layout2.setVisibility(View.GONE);
+                    } else {
+                        binding.layout1.setVisibility(View.GONE);
+                        binding.layout2.setVisibility(View.VISIBLE);
+                    }
+                    super.onSwipeLeft();
+                }
+            });
+        }
+    }
+
+    public class onSwipeTouchListener implements View.OnTouchListener {
+        private final GestureDetector gestureDetector = new GestureDetector(new GestureListener());
+
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            return gestureDetector.onTouchEvent(event);
+        }
+
+        private final class GestureListener extends GestureDetector.SimpleOnGestureListener {
+
+            private static final int SWIPE_THRESHOLD = 50;
+            private static final int SWIPE_VELOCITY_THRESHOLD = 50;
+
+            @Override
+            public boolean onDown(MotionEvent e) {
+                return true;
+            }
+
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                onClick();
+                return true;
+            }
+
+            @Override
+            public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+                boolean result = false;
+                try {
+                    float diffY = e2.getY() - e1.getY();
+                    float diffX = e2.getX() - e1.getX();
+                    if (Math.abs(diffX) > Math.abs(diffY)) {
+                        if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                            if (diffX > 0) {
+                                onSwipeRight();
+                            } else {
+                                onSwipeLeft();
+                            }
+                        }
+                        result = true;
+                    } else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                        if (diffY > 0) {
+                            onSwipeBottom();
+                        } else {
+                            onSwipeTop();
+                        }
+                    }
+                    result = true;
+
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                return result;
+            }
+        }
+
+        public void onSwipeRight() {
+        }
+
+        public void onSwipeLeft() {
+        }
+
+        public void onSwipeTop() {
+        }
+
+        public void onSwipeBottom() {
+        }
+
+        public void onClick() {
         }
     }
 

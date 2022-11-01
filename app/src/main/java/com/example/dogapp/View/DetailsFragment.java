@@ -26,8 +26,7 @@ public class DetailsFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(getLayoutInflater(),R.layout.fragment_details,null,false);
         View viewRoot = binding.getRoot();
         binding.setDog(dogBreed);
